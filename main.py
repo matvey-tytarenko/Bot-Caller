@@ -5,7 +5,7 @@ import config
 
 def on_hotkey():
     print("CTRL + Space is pressed!")
-    server = config.api
+    server = config.host
     try:
         requests.post(server + '/api/call', json={"user": "Sergey", "message": "подойди ко мне"})
         print("Message will sent!")
