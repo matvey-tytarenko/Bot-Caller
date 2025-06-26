@@ -6,19 +6,16 @@ const PORT = process.env.PORT || 5000;
 let serverStatus = false;
 
 // 📌 Роутинг до запуска сервера
-app.get("/", (req, res) => {
-  if (serverStatus) {
-    res.status(200).json({
-      "Server Status": serverStatus,
-      Message: "Server has been started successfully!",
+function router(status, port) {
+  app.get("/", (req, res) => {
+    res.json({
+      "Server Status": status,
+      "Server Connection": "successfully",
     });
-  } else {
-    res.status(500).json({
-      "Server Status": serverStatus,
-      Message: "Server not started properly.",
-    });
-  }
-});
+  });
+}
+
+router(serverStatus, PORT);
 
 // 🔌 Запуск сервера
 const server = http.createServer(app);
