@@ -19,10 +19,10 @@ app.post("/api/call", (req, res) => {
   res.status(200).json({ status: "ok", received: latestMessage });
 
   // Reset for 10 sec
-  if(reset) clearTimeout(reset);
+  if (reset) clearTimeout(reset);
   reset = setTimeout(() => {
     latestMessage = null;
-  }, 60000);
+  }, 5 * 60 * 1000);
 });
 
 // GET-запрос на /
