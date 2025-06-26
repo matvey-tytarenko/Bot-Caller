@@ -2,7 +2,8 @@ const express = require("express");
 const app = express();
 app.use(express.json()); // Обработка JSON
 
-let latestMessage = null; // Здесь будем хранить последнее сообщение
+let latestMessage = null;
+let reset = null; // Здесь будем хранить последнее сообщение
 
 // POST-запрос от клиента (горячая клавиша или трей)
 app.post("/api/call", (req, res) => {
@@ -16,6 +17,12 @@ app.post("/api/call", (req, res) => {
   console.log("📩 Message received:", latestMessage);
 
   res.status(200).json({ status: "ok", received: latestMessage });
+
+  // Reset for 10 sec
+  if(reset) clearTimeout(reset);
+  reset = setTimeout(() => {
+    latestMessage = null;
+  }, 60000);
 });
 
 // GET-запрос на /
