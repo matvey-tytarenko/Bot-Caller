@@ -1,3 +1,19 @@
+# Tray
+import pystray
+from PIL import Image
+
+img = Image.open("wheelchair.png")
+
+def on_exit():
+    icon.stop()
+
+icon = pystray.Icon("Neural", img, menu=pystray.Menu(
+        pystray.MenuItem("выход", on_exit)
+    ))
+
+icon.run()
+
+
 import requests
 import time
 import widget
@@ -22,23 +38,3 @@ def main_loop():
             if last_caller == "Sergey" and message == "подойди ко мне":
                 widget.show()
         time.sleep(10)
-
-
-# Tray
-import pystray
-from PIL import Image
-
-img = Image.open("wheelchair.png")
-
-def on_exit():
-    icon.stop()
-
-icon = pystray.Icon("Neural", img, menu=pystray.Menu(
-        pystray.MenuItem("выход", on_exit)
-    ))
-
-icon.run()
-
-# if __name__ == '__main__':
-#     main_loop()
-main_loop()

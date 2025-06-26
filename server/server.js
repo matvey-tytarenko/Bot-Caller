@@ -22,7 +22,7 @@ app.post("/api/call", (req, res) => {
   if (reset) clearTimeout(reset);
   reset = setTimeout(() => {
     latestMessage = null;
-  }, 5 * 60 * 1000);
+  }, 30 * 1000);
 });
 
 // GET-запрос на /
