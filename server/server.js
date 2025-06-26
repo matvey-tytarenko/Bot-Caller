@@ -20,11 +20,10 @@ router(serverStatus, PORT);
 // 🔌 Запуск сервера
 const server = http.createServer(app);
 
-server.listen(PORT, (err) => {
-  if (err) {
-    console.error("❌ Server Error:", err);
+server.listen(PORT, (error) => {
+  if (error) {
+    console.error("❌ Server failed to start:", error);
   } else {
-    serverStatus = true;
-    console.log(`✅ Server started at: http://localhost:${PORT}`);
+    console.log(`✅ Server is running on http://localhost:${PORT}`);
   }
 });
