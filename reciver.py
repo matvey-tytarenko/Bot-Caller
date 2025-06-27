@@ -4,13 +4,13 @@ import threading
 import requests
 import time
 import widget  # модуль, который показывает окно
-from playsound import playsound as ps
+import config
 
 # Загружаем иконку
 img = Image.open("wheelchair.png")
 
 # URL сервера
-SERVER_URL = "https://bot-caller-nine.vercel.app/"
+SERVER_URL = config.api
 
 # Фоновая проверка сервера
 def get_server_data():
