@@ -5,7 +5,8 @@ import threading
 from playsound import playsound as ps
 
 
-notification = ps("notification.mp3")
+def notification():
+    ps("notification.mp3")
 
 def show():
     # Starting in background
