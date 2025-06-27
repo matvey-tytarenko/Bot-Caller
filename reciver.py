@@ -4,6 +4,7 @@ import threading
 import requests
 import time
 import widget  # модуль, который показывает окно
+from playsound import playsound as ps
 
 # Загружаем иконку
 img = Image.open("wheelchair.png")
