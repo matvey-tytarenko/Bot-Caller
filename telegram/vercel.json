@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "builds": [{ "src": "bot.py", "use": "@vercel/node" }],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "bot.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "bot.py"
+    }
+  ]
+}
