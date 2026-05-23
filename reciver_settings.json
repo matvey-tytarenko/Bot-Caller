@@ -1,0 +1,7 @@
+{
+  "sound": "notification.mp3",
+  "volume": 80,
+  "poll_interval": 10,
+  "last_caller": "Sergey",
+  "trigger_message": "подойди ко мне"
+}

@@ -3,14 +3,15 @@ import keyboard
 import requests
 import config
 
+SERVER_URL = config.api
+
 def on_hotkey():
     print("CTRL + Space is pressed!")
-    server = config.api
     try:
-        requests.post(server + '/api/call', json={"user": "Sergey", "message": "подойди ко мне"})
+        requests.post(SERVER_URL + '/api/call', json={"user": "Sergey", "message": "подойди ко мне"})
         print("Message will sent!")
     except Exception as e:
-        print('Error:' + str(e))
+        print('Error: ' + str(e))
 
 keyboard.add_hotkey('CTRL + Space', on_hotkey)
 
@@ -25,12 +26,12 @@ img = Image.open("wheelchair.png")
 
 def on_clicked(icon, item):
     try:
-        requests.post(server, json={"user": "Sergey", "message": "подойди ко мне"})
+        requests.post(SERVER_URL + '/api/call', json={"user": "Sergey", "message": "подойди ко мне"})
         print("Message will sent!")
     except Exception as e:
-        print('Error: {e}')
+        print('Error: ' + str(e))
 
-def on_exit():
+def on_exit(icon, item):
     icon.stop()
 
 icon = pystray.Icon("Neural", img, menu=pystray.Menu(
