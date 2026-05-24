@@ -25,6 +25,46 @@ ctk.set_default_color_theme("blue")
 
 SETTINGS_FILE = "reciver_settings.json"
 SERVER_URL = config.api
+APP_NAME = "BotReceiver"
+
+# ── Автозапуск (реестр Windows) ────────────────────────────────────────────
+def _autostart_path():
+    import sys
+    return sys.executable if getattr(sys, "frozen", False) else os.path.abspath(__file__)
+
+def is_autostart_enabled():
+    try:
+        import winreg
+        key = winreg.OpenKey(
+            winreg.HKEY_CURRENT_USER,
+            r"Software\Microsoft\Windows\CurrentVersion\Run",
+            0, winreg.KEY_READ
+        )
+        winreg.QueryValueEx(key, APP_NAME)
+        winreg.CloseKey(key)
+        return True
+    except Exception:
+        return False
+
+def set_autostart(enable: bool):
+    try:
+        import winreg
+        key = winreg.OpenKey(
+            winreg.HKEY_CURRENT_USER,
+            r"Software\Microsoft\Windows\CurrentVersion\Run",
+            0, winreg.KEY_SET_VALUE
+        )
+        if enable:
+            winreg.SetValueEx(key, APP_NAME, 0, winreg.REG_SZ, f'"{_autostart_path()}"')
+        else:
+            try:
+                winreg.DeleteValue(key, APP_NAME)
+            except FileNotFoundError:
+                pass
+        winreg.CloseKey(key)
+        return True
+    except Exception:
+        return False
 
 DEFAULT_SETTINGS = {
     "sound": "notification.mp3",
@@ -208,6 +248,25 @@ class ReciverApp(ctk.CTk):
             fill="x", padx=24, pady=(16, 0)
         )
 
+        # ── Автозапуск ──────────────────────────────────────────────────────
+        self._section(self, "Система")
+        autostart_row = ctk.CTkFrame(self, fg_color="transparent")
+        autostart_row.pack(fill="x", padx=24, pady=(4, 0))
+
+        self.autostart_var = ctk.BooleanVar(value=is_autostart_enabled())
+        ctk.CTkCheckBox(
+            autostart_row,
+            text="Запускать при старте Windows",
+            variable=self.autostart_var,
+            font=ctk.CTkFont(size=13),
+            command=self._toggle_autostart
+        ).pack(side="left")
+
+        self.autostart_status = ctk.CTkLabel(
+            autostart_row, text="", font=ctk.CTkFont(size=11), text_color="#888"
+        )
+        self.autostart_status.pack(side="left", padx=10)
+
         btn_row = ctk.CTkFrame(self, fg_color="transparent")
         btn_row.pack(fill="x", padx=24, pady=14)
 
@@ -353,6 +412,16 @@ class ReciverApp(ctk.CTk):
             command=on_ok
         ).pack(pady=18, padx=40, fill="x")
         popup.protocol("WM_DELETE_WINDOW", on_ok)
+
+    def _toggle_autostart(self):
+        ok = set_autostart(self.autostart_var.get())
+        if ok:
+            label = "включён" if self.autostart_var.get() else "отключён"
+            self.autostart_status.configure(text=f"✓ {label}", text_color="#5cb85c")
+        else:
+            self.autostart_status.configure(text="Ошибка доступа к реестру", text_color="#cc3a3a")
+            self.autostart_var.set(not self.autostart_var.get())
+        self.after(2500, lambda: self.autostart_status.configure(text=""))
 
     # ── Пауза ─────────────────────────────────────────────────────────────────
     def _toggle_listen(self):
