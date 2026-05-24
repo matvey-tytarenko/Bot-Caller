@@ -348,7 +348,22 @@ class ReciverApp(ctk.CTk):
     def _start_listener(self):
         threading.Thread(target=self._listen_loop, daemon=True).start()
 
+    def _fetch_current_state(self):
+        """Читаем сервер один раз при старте — чтобы не реагировать на старое сообщение."""
+        try:
+            resp = requests.get(SERVER_URL, timeout=8)
+            resp.raise_for_status()
+            data = resp.json()
+            caller  = data.get("Last Caller", "")
+            message = data.get("Message", "").strip().lower()
+            self._last_seen = (caller, message)
+        except Exception:
+            pass  # если сервер недоступен — ничего страшного, начнём с None
+
     def _listen_loop(self):
+        # При первом запуске запоминаем что уже есть на сервере
+        self._fetch_current_state()
+
         while self._running:
             try:
                 resp = requests.get(SERVER_URL, timeout=8)
@@ -402,7 +417,8 @@ class ReciverApp(ctk.CTk):
 
         def on_ok():
             self._popup_open = False
-            self._last_seen = None
+            # _last_seen НЕ сбрасываем — чтобы не среагировать повторно
+            # на то же сообщение. Сбросится только когда придёт новый вызов.
             popup.destroy()
 
         ctk.CTkButton(
